@@ -2,7 +2,8 @@ const Joi = require('joi');
 
 function validateDriver(driverCreation) {
     const schema = Joi.object({
-      name: Joi.string().required()
+      name: Joi.string().required(),
+      uid: Joi.string().required()
     }); 
     
     const validation =  schema.validate(driverCreation);

@@ -11,9 +11,10 @@ router.post('/create',async  (req, res) => {
     try{
         const db = fs.firestore(); 
         const data = {
-           "name" : req.body.name
+           "name" : req.body.name,
+           "uid" : req.body.uid
         };
-        db.collection("Drivers").add(data);
+        db.collection("Drivers").doc(req.body.uid).set(data);
         res.status(200).send(data); 
       }catch(ex){
         console.log(ex);

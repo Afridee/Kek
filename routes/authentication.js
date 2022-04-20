@@ -30,6 +30,8 @@ router.post('/signUp',async  (req, res) => {
   const { error } = validateSignUp(req.body); 
   if (error) return res.status(400).send(error.details[0].message);
 
+  let customTkn = "...";
+
   fs.auth().createUser({
         email: req.body.email,
         phoneNumber: req.body.phoneNumber,
@@ -37,8 +39,26 @@ router.post('/signUp',async  (req, res) => {
         displayName: req.body.displayName,
     })
     .then((userRecord) => {
-      console.log('Successfully created new user:', userRecord.uid);
-      res.status(200).send({"userRecord" : userRecord}); 
+      const data = {
+        "email": req.body.email,
+        "phoneNumber": req.body.phoneNumber,
+        "password": req.body.password,
+        "displayName": req.body.displayName,
+        "uid" : userRecord.uid
+      };
+      fs.auth()
+      .createCustomToken(userRecord.uid)
+      .then((customToken) => {
+        customTkn = customToken;
+        const db = fs.firestore(); 
+        db.collection("Users").doc(userRecord.uid).set(data);
+        res.status(200).send({"userRecord" : userRecord, "customToken" : customTkn});
+      })
+      .catch((error) => {
+        const db = fs.firestore(); 
+        db.collection("Users").doc(userRecord.uid).set(data);
+        res.status(200).send({"userRecord" : userRecord, "customToken" : customTkn});
+      });  
     })
     .catch((error) => {
       console.log('Error creating new user:', error);
