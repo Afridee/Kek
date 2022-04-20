@@ -4,9 +4,10 @@ const fs = require('firebase-admin');
 const {validateSignUp} = require('../validations/validateSignUp');
 const {validateSignIn} = require('../validations/validateSignIn');
 const {validateAccessToken} = require('../validations/validateAccessToken');
+const {validateCustomToken} = require('../validations/validateCustomToken');
 // Import the functions you need from the SDKs you need
 const {initializeApp} = require("firebase/app");
-const {getAuth, signInWithEmailAndPassword} = require("firebase/auth");
+const {getAuth, signInWithEmailAndPassword, signInWithCustomToken} = require("firebase/auth");
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 // Your web app's Firebase configuration
@@ -48,16 +49,23 @@ router.post('/signUp',async  (req, res) => {
 });
 
 router.post('/signIn',async  (req, res) => {
-
   const { error } = validateSignIn(req.body); 
   if (error) return res.status(400).send(error.details[0].message);
-
   const auth = getAuth();
   let customTkn = "...";
   signInWithEmailAndPassword(auth, req.body.email, req.body.password)
     .then((userCredential) => {
-      const user = userCredential.user;
-      res.status(200).send({"loginDetails" : user, "customToken" : customTkn}); 
+      fs.auth()
+      .createCustomToken(userCredential.user.uid)
+      .then((customToken) => {
+        customTkn = customToken;
+        const user = userCredential.user;
+        res.status(200).send({"loginDetails" : user, "customToken" : customTkn});
+      })
+      .catch((error) => {
+        const user = userCredential.user;
+        res.status(200).send({"loginDetails" : user, "customToken" : customTkn});
+      }); 
     })
     .catch((error) => {
       res.status(500).send({
@@ -66,8 +74,9 @@ router.post('/signIn',async  (req, res) => {
     });
 });
 
-router.post('/verifyToken',async  (req, res) => {
 
+
+router.post('/verifyToken',async  (req, res) => {
   const { error } = validateAccessToken(req.body); 
   if (error) return res.status(400).send(error.details[0].message);
 
@@ -79,6 +88,26 @@ router.post('/verifyToken',async  (req, res) => {
   })
   .catch((error) => {
     console.log(error.message);
+    res.status(500).send({
+      "error" : error.message
+    });
+  });
+});
+
+
+
+router.post('/signInWithCustomToken',async  (req, res) => {
+
+  const { error } = validateCustomToken(req.body); 
+  if (error) return res.status(400).send(error.details[0].message);
+
+  const auth = getAuth();
+  signInWithCustomToken(auth, req.body.customToken)
+  .then((userCredential) => {
+    var user = userCredential.user;
+    res.status(200).send({"loginDetails" : user});
+  })
+  .catch((error) => {
     res.status(500).send({
       "error" : error.message
     });
