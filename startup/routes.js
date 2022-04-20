@@ -1,6 +1,7 @@
 const express = require('express');
 const driver = require('../routes/driver');
 const authentication = require('../routes/authentication');
+const article = require('../routes/article');
 const fs = require('firebase-admin');
 
 const serviceAccount = {
@@ -25,4 +26,5 @@ module.exports = function(app){
     app.use(express.json());
     app.use('/api/driver', driver);
     app.use('/api/authentication', authentication);
+    app.use('/api/article', article);
 }

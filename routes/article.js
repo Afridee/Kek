@@ -1,20 +1,23 @@
 const express = require('express');
 const router = express.Router();
 const fs = require('firebase-admin');
-const {validateDriver} = require('../validations/validateDriver');
+const {validateArticle} = require('../validations/validateArticle');
 
-router.post('/enrol',async  (req, res) => {
 
-    const { error } = validateDriver(req.body); 
+router.post('/create',async  (req, res) => {
+
+    const { error } = validateArticle(req.body); 
     if (error) return res.status(400).send(error.details[0].message);
 
     try{
         const db = fs.firestore(); 
         const data = {
-           "name" : req.body.name,
-           "uid" : req.body.uid
+           "title" : req.body.title,
+           "subject": req.body.subject,
+           "body": req.body.body,
+           "writtenBy" : req.body.uid
         };
-        db.collection("Drivers").doc(req.body.uid).set(data);
+        db.collection("Articles").add(data);
         res.status(200).send(data); 
       }catch(ex){
         console.log(ex);
@@ -23,5 +26,6 @@ router.post('/enrol',async  (req, res) => {
         });
       }
 }) 
+
 
 module.exports = router;
