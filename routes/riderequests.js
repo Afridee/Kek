@@ -1,0 +1,99 @@
+const express = require('express');
+const router = express.Router();
+const fs = require('firebase-admin');
+const {validateRideRequestCreation} = require('../validations/validateRideRequestCreation');
+const {validateRideRequestAcceptance} = require('../validations/validateRideRequestAcceptance');
+
+router.post('/create',async  (req, res) => {
+
+    const { error } = validateRideRequestCreation(req.body); 
+    if (error) return res.status(400).send(error.details[0].message);
+
+    try{
+        const db = fs.firestore(); 
+        const data = {
+           "requestedBy" : {
+              "uid" : req.body.requestedBy.uid,
+              "displayName" : req.body.requestedBy.displayName,
+              "email" :  req.body.requestedBy.email,
+              "phoneNumber" : req.body.requestedBy.phoneNumber,
+           }, //takes requester's UID 
+           "accepted" : false,
+           "driver" : null,
+           "pickUpFrom" : req.body.pickUpFrom,
+           "destination" : req.body.destination,
+           "timeOfRequest" : Date.now()//Assuming that this timestamp is in milliseconds
+        };
+        db.collection("RideRequests").add(data);
+        res.status(200).send(data); 
+      }catch(ex){
+        console.log(ex);
+        res.status(500).send({
+          "error" : ex.message
+        });
+      }
+}); 
+
+
+router.get('/getRequests',async  (req, res) => {
+    const db = fs.firestore();
+    let now = new Date();
+    let fireHoursTillNow = now.setHours(now.getHours() - 5);
+    console.log("fireHoursTillNow: ", fireHoursTillNow);
+    const query = db.collection("RideRequests").where('accepted','==',false).where('timeOfRequest', '>', fireHoursTillNow);
+    let requestList = [];
+    query.get().then(snapshot => {
+        snapshot.forEach(RideRequest => {
+          console.log(RideRequest.id, ' => ', RideRequest.data());
+          requestList.push({"requestId" : RideRequest.id,"data" : (RideRequest.data())});
+        });
+        res.status(200).send(requestList);
+      })
+      .catch(error => {
+        console.error(error);
+          res.status(500).send({
+            "error" : error.message
+          });
+      });
+});
+
+router.post('/acceptRequest',async  (req, res) => {
+
+    const { error } = validateRideRequestAcceptance(req.body); 
+    if (error) return res.status(400).send(error.details[0].message);
+
+    try{
+        const db = fs.firestore(); 
+
+        await db.collection("RideRequests").doc(req.body.requestId).get().then(RideRequest => {
+             if(RideRequest.exists && RideRequest.data().accepted == false){
+                db.collection("Drivers").doc(req.body.driverUID).get().then(driver => {
+                   if(driver.exists){
+                    const data = {
+                        //changes will be made here: 
+                        "accepted" : true,
+                        "driver" : driver.data()
+                     };
+                    db.collection("RideRequests").doc(req.body.requestId).update(data); 
+                    res.status(200).send("successfully Updated");
+                   }else{
+                    res.status(500).send({
+                        "error" : "Driver doesn't exist"
+                      }); 
+                   }
+                })
+             }else{
+                res.status(500).send({
+                    "error" : "Ride Request doesn't exist or request already taken by another driver"
+                  });
+             } 
+        });
+      }catch(ex){
+        console.log(ex);
+        res.status(500).send({
+          "error" : ex.message
+        });
+      }
+}); 
+
+module.exports = router;

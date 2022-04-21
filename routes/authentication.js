@@ -6,24 +6,11 @@ const {validateSignIn} = require('../validations/validateSignIn');
 const {validateAccessToken} = require('../validations/validateAccessToken');
 const {validateCustomToken} = require('../validations/validateCustomToken');
 // Import the functions you need from the SDKs you need
-const {initializeApp} = require("firebase/app");
 const {getAuth, signInWithEmailAndPassword, signInWithCustomToken} = require("firebase/auth");
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-const firebaseConfig = {
-  apiKey: process.env.firebaseapiKey,
-  authDomain: process.env.firebaseauthDomain,
-  databaseURL: process.env.firebasedatabaseURL,
-  projectId: process.env.firebaseprojectId,
-  storageBucket: process.env.firebasestorageBucket,
-  messagingSenderId: process.env.firebasemessagingSenderId,
-  appId: process.env.firebaseappId,
-  measurementId: process.env.firebasemeasurementId
-};
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
 
 router.post('/signUp',async  (req, res) => {
 

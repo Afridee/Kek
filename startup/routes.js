@@ -2,7 +2,20 @@ const express = require('express');
 const driver = require('../routes/driver');
 const authentication = require('../routes/authentication');
 const article = require('../routes/article');
+const rideRequests = require('../routes/riderequests');
 const fs = require('firebase-admin');
+const {initializeApp} = require("firebase/app");
+
+const firebaseConfig = {
+  apiKey: process.env.firebaseapiKey,
+  authDomain: process.env.firebaseauthDomain,
+  databaseURL: process.env.firebasedatabaseURL,
+  projectId: process.env.firebaseprojectId,
+  storageBucket: process.env.firebasestorageBucket,
+  messagingSenderId: process.env.firebasemessagingSenderId,
+  appId: process.env.firebaseappId,
+  measurementId: process.env.firebasemeasurementId
+};
 
 const serviceAccount = {
     "type": "service_account",
@@ -17,14 +30,18 @@ const serviceAccount = {
     "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-qe244%40kekk-c40d0.iam.gserviceaccount.com"
   };
 
-
+// Initialize Firebase-admin  
 fs.initializeApp({
   credential: fs.credential.cert(serviceAccount)
  });
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig); 
 
 module.exports = function(app){
     app.use(express.json());
     app.use('/api/driver', driver);
     app.use('/api/authentication', authentication);
     app.use('/api/article', article);
+    app.use('/api/rideRequests', rideRequests);
 }
