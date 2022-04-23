@@ -9,7 +9,9 @@ function validateRideRequestCreation(RideRequestCreation) {
         phoneNumber : Joi.string().required()
       }).required(),
       pickUpFrom : Joi.string().required(),
-      destination : Joi.string().required()
+      destination : Joi.string().required(),
+      estimatedPrice: Joi.number().required(),
+      suggestedPrice: Joi.number().required(),
     }); 
     
     const validation =  schema.validate(RideRequestCreation);

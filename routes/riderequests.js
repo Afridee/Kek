@@ -3,6 +3,8 @@ const router = express.Router();
 const fs = require('firebase-admin');
 const {validateRideRequestCreation} = require('../validations/validateRideRequestCreation');
 const {validateRideRequestAcceptance} = require('../validations/validateRideRequestAcceptance');
+const {validateGetEstimatedPrice} = require('../validations/validategetEstimatedPrice');
+const {calcCrow} = require('../functions/distanceCalculator');
 
 router.post('/create',async  (req, res) => {
 
@@ -22,6 +24,8 @@ router.post('/create',async  (req, res) => {
            "driver" : null,
            "pickUpFrom" : req.body.pickUpFrom,
            "destination" : req.body.destination,
+           "estimatedPrice": req.body.estimatedPrice,
+           "suggestedPrice": req.body.suggestedPrice,
            "timeOfRequest" : Date.now()//Assuming that this timestamp is in milliseconds
         };
         db.collection("RideRequests").add(data);
@@ -95,5 +99,15 @@ router.post('/acceptRequest',async  (req, res) => {
         });
       }
 }); 
+
+router.post('/getEstimatedPrice',async  (req, res) => {
+
+  const { error } = validateGetEstimatedPrice(req.body); 
+  if (error) return res.status(400).send(error.details[0].message);
+  
+  const price = 70.577777; //rate per kilometer
+  const s = calcCrow(req.body.lat1, req.body.lon1, req.body.lat2, req.body.lon2); //distance in kilometer
+  res.status(200).send({"estimatedPrice": (s*price).toFixed(2), "distanceIn" : "km"});
+})
 
 module.exports = router;
