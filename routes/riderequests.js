@@ -26,6 +26,7 @@ router.post('/create',async  (req, res) => {
            "destination" : req.body.destination,
            "estimatedPrice": req.body.estimatedPrice,
            "suggestedPrice": req.body.suggestedPrice,
+           "priceSuggested": req.body.suggestedPrice>0,
            "timeOfRequest" : Date.now()//Assuming that this timestamp is in milliseconds
         };
         db.collection("RideRequests").add(data);
