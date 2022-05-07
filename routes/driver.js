@@ -69,7 +69,7 @@ router.post('/uploadDriverLicense/:uid',async (req, res) => {
                 let file = req.file;
                 if (file) 
                 {
-                     uploadImageToStorage(file).then((fileLink) => {
+                     uploadImageToStorage(file, `${req.params.uid}_DriverLicense`).then((fileLink) => {
                       //sets the data:  
                       data = {
                         //changes will be made here: 
@@ -112,7 +112,7 @@ router.post('/uploadInsurance/:uid',async (req, res) => {
             let file = req.file;
             if (file) 
             {
-                 uploadImageToStorage(file).then((fileLink) => {
+                 uploadImageToStorage(file, `${req.params.uid}_Insurance`).then((fileLink) => {
                   //sets the data:  
                   data = {
                     //changes will be made here: 
@@ -155,7 +155,7 @@ router.post('/uploadVehicleregistration/:uid',async (req, res) => {
             let file = req.file;
             if (file) 
             {
-                 uploadImageToStorage(file).then((fileLink) => {
+                 uploadImageToStorage(file, `${req.params.uid}_Vehicleregistration`).then((fileLink) => {
                   //sets the data:  
                   data = {
                     //changes will be made here: 

@@ -17,12 +17,12 @@ const storage = new Storage(
  * Upload the image file to Google Storage
  * @param {File} file object that will be uploaded to Google Storage
  */
- const uploadImageToStorage = (file) => {
+ const uploadImageToStorage = (file, filename) => {
     return new Promise((resolve, reject) => {
       if (!file) {
         reject('No image file');
       }
-      let newFileName = `${Date.now()}`;
+      let newFileName = filename;
   
       let fileUpload = bucket.file(newFileName);
   
