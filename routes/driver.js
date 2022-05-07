@@ -36,8 +36,8 @@ router.post('/enrol',async  (req, res) => {
           "Vehicleregistrationnumber" : req.body.Vehicleregistrationnumber,
           "Vehicleregistrationexpirationdate" : req.body.Vehicleregistrationexpirationdate,
           "Socialsecuritynumber" : req.body.Vehicleregistrationexpirationdate,
-          "Driverlicensepicture " : "null",
-          "Insurance picture" : "null",
+          "Driverlicensepicture" : "null",
+          "Insurancepicture" : "null",
           "Vehicleregistrationpicture" : "null"
         };
         db.collection("Drivers").doc(req.body.uid).set(data);
@@ -73,7 +73,7 @@ router.post('/uploadDriverLicense/:uid',async (req, res) => {
                       //sets the data:  
                       data = {
                         //changes will be made here: 
-                        "Driverlicensepicture " : fileLink,
+                        "Driverlicensepicture" : fileLink,
                       };
                       //updates database:
                       db.collection("Drivers").doc(req.params.uid).update(data);
@@ -98,6 +98,93 @@ router.post('/uploadDriverLicense/:uid',async (req, res) => {
         }
       })
 });
+
+router.post('/uploadInsurance/:uid',async (req, res) => {
+  const db = fs.firestore();
+
+  db.collection("Drivers").doc(req.params.uid).get().then(driver => {
+    if(driver.exists){
+      upload(req, res, function (err) {
+        if (err) {
+          return res.status(400).send({ error: err.message })
+        }
+        else{
+            let file = req.file;
+            if (file) 
+            {
+                 uploadImageToStorage(file).then((fileLink) => {
+                  //sets the data:  
+                  data = {
+                    //changes will be made here: 
+                    "Insurancepicture" : fileLink,
+                  };
+                  //updates database:
+                  db.collection("Drivers").doc(req.params.uid).update(data);
+                  //sends response:
+                  res.status(200).send({
+                    "message" : "successfully uploaded"
+                  });
+                  }).catch((error) => {
+                    console.error(error);
+                    return res.status(400).send({ error: error.message })
+                  });
+              }
+              else{
+                    return res.status(400).send({ error: "where is the file bruh?" })
+              }
+        }
+      });
+    }else{
+      res.status(400).send({
+        "error" : "Driver doesn't exist"
+      });
+    }
+  })
+});
+
+router.post('/uploadVehicleregistration/:uid',async (req, res) => {
+  const db = fs.firestore();
+
+  db.collection("Drivers").doc(req.params.uid).get().then(driver => {
+    if(driver.exists){
+      upload(req, res, function (err) {
+        if (err) {
+          return res.status(400).send({ error: err.message })
+        }
+        else{
+            let file = req.file;
+            if (file) 
+            {
+                 uploadImageToStorage(file).then((fileLink) => {
+                  //sets the data:  
+                  data = {
+                    //changes will be made here: 
+                    "Vehicleregistrationpicture" : fileLink,
+                  };
+                  //updates database:
+                  db.collection("Drivers").doc(req.params.uid).update(data);
+                  //sends response:
+                  res.status(200).send({
+                    "message" : "successfully uploaded"
+                  });
+                  }).catch((error) => {
+                    console.error(error);
+                    return res.status(400).send({ error: error.message })
+                  });
+              }
+              else{
+                    return res.status(400).send({ error: "where is the file bruh?" })
+              }
+        }
+      });
+    }else{
+      res.status(400).send({
+        "error" : "Driver doesn't exist"
+      });
+    }
+  })
+});
+
 
 
 module.exports = router;
