@@ -16,10 +16,10 @@ const multer = Multer({
   },
   limits: {
     fileSize: 2 * 1024 * 1024, // no larger than 2mb, you can change as needed.
-    files: 3, 
+    files: 1, 
   },
 });
-const upload = multer.array('file');
+const upload = multer.single('file');
 
 router.post('/enrol',async  (req, res) => {
 
@@ -51,12 +51,12 @@ router.post('/enrol',async  (req, res) => {
 }); 
 
 
-router.post('/uploadDriverDocs/:uid', (req, res) => {
-      
-      //the serial goes like this:
-      //first pic : Driver license picture  
-      //second pic : Insurance picture 
-      //third pic : Vehicle registration picture
+//the serial goes like this:
+//first pic : Driver license picture  
+//second pic : Insurance picture 
+//third pic : Vehicle registration picture
+
+router.post('/uploadDriverLicense/:uid',async (req, res) => {
       const db = fs.firestore();
 
       db.collection("Drivers").doc(req.params.uid).get().then(driver => {
@@ -64,44 +64,33 @@ router.post('/uploadDriverDocs/:uid', (req, res) => {
           upload(req, res, function (err) {
             if (err) {
               return res.status(400).send({ error: err.message })
-            }else{
-              if(req.files != null && req.files.length==3){ 
-              for(let i=0;i<req.files.length;i++){
-                let file = req.files[i];
-                if (file) {
-                      uploadImageToStorage(file).then((fileLink) => {
-                      console.log(i);  
-                      data = {};
-                      if(i==0){
-                            data = {
-                              //changes will be made here: 
-                              "Driverlicensepicture " : fileLink,
+            }
+            else{
+                let file = req.file;
+                if (file) 
+                {
+                     uploadImageToStorage(file).then((fileLink) => {
+                      //sets the data:  
+                      data = {
+                        //changes will be made here: 
+                        "Driverlicensepicture " : fileLink,
                       };
-                      }else if(i==1){
-                            data = {
-                              "Insurancepicture" : fileLink,
-                            };
-                      }else if(i==2){
-                            data = {
-                              "Vehicleregistrationpicture" : fileLink
-                            };
-                      }
+                      //updates database:
                       db.collection("Drivers").doc(req.params.uid).update(data);
+                      //sends response:
+                      res.status(200).send({
+                        "message" : "successfully uploaded"
+                      });
                       }).catch((error) => {
                         console.error(error);
+                        return res.status(400).send({ error: error.message })
                       });
-                }
-              }
-              res.status(200).send({
-                "message" : "successfully uploaded"
-              });
-            }else{
-              res.status(400).send({
-                "error" : "dafq!! You were suppose to upload 3 files"
-              });
+                  }
+                  else{
+                        return res.status(400).send({ error: "where is the file bruh?" })
+                  }
             }
-          }
-            });
+          });
         }else{
           res.status(400).send({
             "error" : "Driver doesn't exist"
