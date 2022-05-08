@@ -35,7 +35,7 @@ router.post('/enrol',async  (req, res) => {
           "Insurancepolicyexpirationdate" : req.body.Insurancepolicyexpirationdate,
           "Vehicleregistrationnumber" : req.body.Vehicleregistrationnumber,
           "Vehicleregistrationexpirationdate" : req.body.Vehicleregistrationexpirationdate,
-          "Socialsecuritynumber" : req.body.Vehicleregistrationexpirationdate,
+          "Socialsecuritynumber" : req.body.Socialsecuritynumber,
           "Driverlicensepicture" : "null",
           "Insurancepicture" : "null",
           "Vehicleregistrationpicture" : "null"
