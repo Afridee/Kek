@@ -186,5 +186,17 @@ router.post('/uploadVehicleregistration/:uid',async (req, res) => {
 });
 
 
+router.get('/:uid',async (req, res) => {
+  const db = fs.firestore();
+
+  db.collection("Drivers").doc(req.params.uid).get().then(driver => {
+     if(driver.exists){
+       res.status(200).send(driver.data());
+     }else{
+       res.status(400).send({ error : "Driver  doesn't exist"});
+     }
+  });
+});
+
 
 module.exports = router;
