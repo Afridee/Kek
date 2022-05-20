@@ -39,12 +39,12 @@ router.post('/signUp',async  (req, res) => {
         customTkn = customToken;
         const db = fs.firestore(); 
         db.collection("Users").doc(userRecord.uid).set(data);
-        res.status(200).send({"userRecord" : userRecord, "customToken" : customTkn});
+        res.status(200).send({"loginDetails" : userRecord, "customToken" : customTkn});
       })
       .catch((error) => {
         const db = fs.firestore(); 
         db.collection("Users").doc(userRecord.uid).set(data);
-        res.status(200).send({"userRecord" : userRecord, "customToken" : customTkn});
+        res.status(200).send({"loginDetails" : userRecord, "customToken" : customTkn});
       });  
     })
     .catch((error) => {

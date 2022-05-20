@@ -50,12 +50,6 @@ router.post('/enrol',async  (req, res) => {
       }
 }); 
 
-
-//the serial goes like this:
-//first pic : Driver license picture  
-//second pic : Insurance picture 
-//third pic : Vehicle registration picture
-
 router.post('/uploadDriverLicense/:uid',async (req, res) => {
       const db = fs.firestore();
 
