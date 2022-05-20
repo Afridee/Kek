@@ -62,6 +62,29 @@ router.get('/getRequests',async  (req, res) => {
       });
 });
 
+router.get('/getMyRequests/:uid',async  (req, res) => {
+  const db = fs.firestore();
+  let now = new Date();
+  let fireHoursTillNow = now.setHours(now.getHours() - 5);
+  console.log("fireHoursTillNow: ", fireHoursTillNow);
+  const query = db.collection("RideRequests").where('timeOfRequest', '>', fireHoursTillNow);
+  let requestList = [];
+  query.get().then(snapshot => {
+      snapshot.forEach(RideRequest => {
+        if(RideRequest.data().requestedBy.uid == req.params.uid || RideRequest.data().driver.uid == req.params.uid){
+          requestList.push({"requestId" : RideRequest.id,"data" : (RideRequest.data())});
+        }
+      });
+      res.status(200).send(requestList);
+    })
+    .catch(error => {
+      console.error(error);
+        res.status(500).send({
+          "error" : error.message
+        });
+    });
+});
+
 router.post('/acceptRequest',async  (req, res) => {
 
     const { error } = validateRideRequestAcceptance(req.body); 
