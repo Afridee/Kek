@@ -112,7 +112,7 @@ router.post('/signInWithCustomToken',async  (req, res) => {
   signInWithCustomToken(auth, req.body.customToken)
   .then((userCredential) => {
     var user = userCredential.user;
-    res.status(200).send({"loginDetails" : user});
+    res.status(200).send({"loginDetails" : user, "customToken" : req.body.customToken});
   })
   .catch((error) => {
     res.status(500).send({
