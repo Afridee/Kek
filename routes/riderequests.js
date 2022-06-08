@@ -33,7 +33,7 @@ router.post('/create',async  (req, res) => {
         res.status(200).send(data); 
       }catch(ex){
         console.log(ex);
-        res.status(500).send({
+        res.status(400).send({
           "error" : ex.message
         });
       }
@@ -56,7 +56,7 @@ router.get('/getRequests',async  (req, res) => {
       })
       .catch(error => {
         console.error(error);
-          res.status(500).send({
+          res.status(400).send({
             "error" : error.message
           });
       });
@@ -79,7 +79,7 @@ router.get('/getMyRequests/:uid',async  (req, res) => {
     })
     .catch(error => {
       console.error(error);
-        res.status(500).send({
+        res.status(400).send({
           "error" : error.message
         });
     });
@@ -105,20 +105,20 @@ router.post('/acceptRequest',async  (req, res) => {
                     db.collection("RideRequests").doc(req.body.requestId).update(data); 
                     res.status(200).send("successfully Updated");
                    }else{
-                    res.status(500).send({
+                    res.status(400).send({
                         "error" : "Driver doesn't exist"
                       }); 
                    }
                 })
              }else{
-                res.status(500).send({
+                res.status(400).send({
                     "error" : "Ride Request doesn't exist or request already taken by another driver"
                   });
              } 
         });
       }catch(ex){
         console.log(ex);
-        res.status(500).send({
+        res.status(400).send({
           "error" : ex.message
         });
       }

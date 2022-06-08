@@ -21,7 +21,7 @@ router.post('/create',async  (req, res) => {
         res.status(200).send(data); 
       }catch(ex){
         console.log(ex);
-        res.status(500).send({
+        res.status(400).send({
           "error" : ex.message
         });
       }

@@ -49,7 +49,7 @@ router.post('/signUp',async  (req, res) => {
     })
     .catch((error) => {
       console.log('Error creating new user:', error);
-      res.status(500).send({
+      res.status(400).send({
         "error" : error.message
       });
     });
@@ -75,7 +75,7 @@ router.post('/signIn',async  (req, res) => {
       }); 
     })
     .catch((error) => {
-      res.status(500).send({
+      res.status(400).send({
         "error" : error.message
       });
     });
@@ -95,7 +95,7 @@ router.post('/verifyToken',async  (req, res) => {
   })
   .catch((error) => {
     console.log(error.message);
-    res.status(500).send({
+    res.status(400).send({
       "error" : error.message
     });
   });
@@ -115,7 +115,7 @@ router.post('/signInWithCustomToken',async  (req, res) => {
     res.status(200).send({"loginDetails" : user, "customToken" : req.body.customToken});
   })
   .catch((error) => {
-    res.status(500).send({
+    res.status(400).send({
       "error" : error.message
     });
   });
