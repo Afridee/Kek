@@ -6,9 +6,9 @@ function validateDriver(driverCreation) {
       uid: Joi.string().required(),
       Driverexpirationdate : Joi.string().required(),
       Insurancepolicyexpirationdate : Joi.string().required(),
-      Vehicleregistrationnumber : Joi.number().required(),
+      Vehicleregistrationnumber : Joi.string().required(),
       Vehicleregistrationexpirationdate : Joi.string().required(),
-      Socialsecuritynumber : Joi.number().required()
+      Socialsecuritynumber : Joi.string().required()
     }); 
     
     const validation =  schema.validate(driverCreation);
