@@ -5,7 +5,8 @@ function validateArticle(articleCreation) {
       title : Joi.string().required(),
       subject: Joi.string().required(),
       body: Joi.string().required(),
-      uid : Joi.string().required()
+      uid : Joi.string().required(),
+      tags : Joi.array().items(Joi.string()).required()
     }); 
     
     const validation =  schema.validate(articleCreation);
