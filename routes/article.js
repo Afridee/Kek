@@ -18,7 +18,8 @@ router.post('/create',async  (req, res) => {
            "title" : req.body.title,
            "subject": req.body.subject,
            "body": req.body.body,
-           "writtenBy" : req.body.uid,
+           "writeruid" : req.body.uid,
+           "writername" : req.body.name,
            "tags": req.body.tags,
            "likes": [],
            "comments" : [] 
