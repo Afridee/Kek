@@ -21,6 +21,8 @@ router.post('/create',async  (req, res) => {
               "phoneNumber" : req.body.requestedBy.phoneNumber,
            }, //takes requester's UID 
            "accepted" : false,
+           "paid" : false,
+           "cancelled": false,
            "driver" : null,
            "pickUpFrom" : req.body.pickUpFrom,
            "destination" : req.body.destination,
