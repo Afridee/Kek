@@ -87,34 +87,25 @@ router.get('/getMyRequests/:uid',async  (req, res) => {
     });
 });
 
-router.post('/acceptRequest',async  (req, res) => {
+router.post('/cancelRequest',async  (req, res) => {
 
     const { error } = validateRideRequestAcceptance(req.body); 
     if (error) return res.status(400).send(error.details[0].message);
 
     try{
         const db = fs.firestore(); 
-
         await db.collection("RideRequests").doc(req.body.requestId).get().then(RideRequest => {
-             if(RideRequest.exists && RideRequest.data().accepted == false){
-                db.collection("Drivers").doc(req.body.driverUID).get().then(driver => {
-                   if(driver.exists){
-                    const data = {
-                        //changes will be made here: 
-                        "accepted" : true,
-                        "driver" : driver.data()
-                     };
-                    db.collection("RideRequests").doc(req.body.requestId).update(data); 
-                    res.status(200).send("successfully Updated");
-                   }else{
-                    res.status(400).send({
-                        "error" : "Driver doesn't exist"
-                      }); 
-                   }
-                })
-             }else{
+             if(RideRequest.exists && RideRequest.data().accepted == true && RideRequest.data().driver.uid == req.body.driverUID){
+              const data = {
+                //changes will be made here: 
+                "cancelled" : true,
+             };
+            db.collection("RideRequests").doc(req.body.requestId).update(data); 
+            res.status(200).send("successfully Updated");
+             }
+             else{
                 res.status(400).send({
-                    "error" : "Ride Request doesn't exist or request already taken by another driver"
+                    "error" : "Ride Request doesn't exist or request not accepted yet or request is being cancelled by a different driver"
                   });
              } 
         });
@@ -125,6 +116,45 @@ router.post('/acceptRequest',async  (req, res) => {
         });
       }
 }); 
+
+router.post('/acceptRequest',async  (req, res) => {
+
+  const { error } = validateRideRequestAcceptance(req.body); 
+  if (error) return res.status(400).send(error.details[0].message);
+
+  try{
+      const db = fs.firestore(); 
+
+      await db.collection("RideRequests").doc(req.body.requestId).get().then(RideRequest => {
+           if(RideRequest.exists && RideRequest.data().accepted == false){
+              db.collection("Drivers").doc(req.body.driverUID).get().then(driver => {
+                 if(driver.exists){
+                  const data = {
+                      //changes will be made here: 
+                      "accepted" : true,
+                      "driver" : driver.data()
+                   };
+                  db.collection("RideRequests").doc(req.body.requestId).update(data); 
+                  res.status(200).send("successfully Updated");
+                 }else{
+                  res.status(400).send({
+                      "error" : "Driver doesn't exist"
+                    }); 
+                 }
+              })
+           }else{
+              res.status(400).send({
+                  "error" : "Ride Request doesn't exist or request already taken by another driver"
+                });
+           } 
+      });
+    }catch(ex){
+      console.log(ex);
+      res.status(400).send({
+        "error" : ex.message
+      });
+    }
+});
 
 router.post('/getEstimatedPrice',async  (req, res) => {
 
