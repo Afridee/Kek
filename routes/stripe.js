@@ -81,8 +81,15 @@ router.post('/attachCardToCustomer',async  (req, res) => {
     .catch(error => res.status(400).send({"error" : error.raw.message})); 
 });
 
-router.post('/detachCardFromCustomer',async  (req, res) => {
-
+router.post('/detachCardFromCustomer/:paymentMethodID',async  (req, res) => {
+     try{
+          const paymentMethod = await stripe.paymentMethods.detach(
+            req.params.paymentMethodID
+          );
+          res.status(200).send("Successfully removed");
+     }catch(error){
+        res.status(400).send({"error" : error.raw.message});
+     }
 });
 
 router.get('/getCustomerPaymentMethods/:cus_id',async  (req, res) => {
