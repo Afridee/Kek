@@ -139,7 +139,7 @@ router.post('/acceptRequest',async  (req, res) => {
                  }else{
                   res.status(400).send({
                       "error" : "Driver doesn't exist"
-                    }); 
+                  }); 
                  }
               })
            }else{

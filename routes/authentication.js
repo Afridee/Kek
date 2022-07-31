@@ -29,7 +29,6 @@ router.post('/signUp',async  (req, res) => {
       const data = {
         "email": req.body.email,
         "phoneNumber": req.body.phoneNumber,
-        "password": req.body.password,
         "displayName": req.body.displayName,
         "uid" : userRecord.uid
       };

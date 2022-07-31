@@ -3,6 +3,7 @@ const driver = require('../routes/driver');
 const authentication = require('../routes/authentication');
 const article = require('../routes/article');
 const rideRequests = require('../routes/riderequests');
+const stripe = require('../routes/stripe');
 const fs = require('firebase-admin');
 const {initializeApp} = require("firebase/app");
 
@@ -44,4 +45,5 @@ module.exports = function(app){
     app.use('/api/authentication', authentication);
     app.use('/api/article', article);
     app.use('/api/rideRequests', rideRequests);
+    app.use('/api/stripe', stripe);
 }
