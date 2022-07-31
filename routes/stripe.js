@@ -30,7 +30,7 @@ router.post('/createCustomer',async  (req, res) => {
                 }
             });
         })
-        .catch(error => res.status(400).send({"error" : error.raw.message}));
+        .catch(error => res.status(400).send({"error" : error.raw.code}));
 });
 
 
@@ -76,9 +76,9 @@ router.post('/attachCardToCustomer',async  (req, res) => {
             {customer: req.body.cus_id}
         )
         .then( attachedPaymentMethod => res.status(200).send({"PaymentMethod" : attachedPaymentMethod}))
-        .catch(error => res.status(400).send({"error" : error.raw.message}));    
+        .catch(error => res.status(400).send({"error" : error.raw.code}));    
     })
-    .catch(error => res.status(400).send({"error" : error.raw.message})); 
+    .catch(error => res.status(400).send({"error" : error.raw.code})); 
 });
 
 router.post('/detachCardFromCustomer/:paymentMethodID',async  (req, res) => {
@@ -88,7 +88,7 @@ router.post('/detachCardFromCustomer/:paymentMethodID',async  (req, res) => {
           );
           res.status(200).send("Successfully removed");
      }catch(error){
-        res.status(400).send({"error" : error.raw.message});
+        res.status(400).send({"error" : error.raw.code});
      }
 });
 
@@ -98,7 +98,7 @@ router.get('/getCustomerPaymentMethods/:cus_id',async  (req, res) => {
         {type: 'card'}
       )
       .then(paymentMethods => res.status(200).send({"PaymentMethods" : paymentMethods}))
-      .catch(error => res.status(400).send({"error" : error.raw.message}));
+      .catch(error => res.status(400).send({"error" : error.raw.code}));
 });
 
 //testing data:
@@ -133,9 +133,9 @@ router.post('/payForRide',async  (req, res) => {
                         await db.collection("RideRequests").doc(req.body.requestId).update(data); 
                         res.status(200).send({"confirmPaymentIntent" : confirmPaymentIntent})
                     })
-                    .catch(error => res.status(400).send({"error" : error.raw.message}));
+                    .catch(error => res.status(400).send({"error" : error.raw.code}));
                 })
-                .catch(error => res.status(400).send({"error" : error.raw.message}));
+                .catch(error => res.status(400).send({"error" : error.raw.code}));
             }else{
                 res.status(400).send({"error" : "this RideRequest doesn't exist or it's already paid for."})
             }
