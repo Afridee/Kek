@@ -67,7 +67,7 @@ router.get('/getRequests',async  (req, res) => {
 router.get('/getMyRequests/:uid',async  (req, res) => {
   const db = fs.firestore();
   let now = new Date();
-  let fireHoursTillNow = now.setHours(now.getHours() - 5);
+  let fireHoursTillNow = now.setHours(now.getHours() - 24);
   console.log("fireHoursTillNow: ", fireHoursTillNow);
   const query = db.collection("RideRequests").where('timeOfRequest', '>', fireHoursTillNow);
   let requestList = [];
