@@ -161,9 +161,12 @@ router.post('/getEstimatedPrice',async  (req, res) => {
   const { error } = validateGetEstimatedPrice(req.body); 
   if (error) return res.status(400).send(error.details[0].message);
   
-  const price = 70.577777; //rate per kilometer
-  const s = calcCrow(req.body.lat1, req.body.lon1, req.body.lat2, req.body.lon2); //distance in kilometer
-  res.status(200).send({"estimatedPrice": (s*price).toFixed(2), "distanceIn" : "km"});
+  const db = fs.firestore();
+  await db.collection("infos").doc("fair").get().then(info => {
+    const price = info.data().value; //rate per kilometer
+    const s = calcCrow(req.body.lat1, req.body.lon1, req.body.lat2, req.body.lon2); //distance in kilometer
+    res.status(200).send({"estimatedPrice": (s*price).toFixed(2), "distanceIn" : "km"});
+  });
 })
 
 module.exports = router;
