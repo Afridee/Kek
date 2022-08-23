@@ -2,6 +2,7 @@ const express = require('express');
 const driver = require('../routes/driver');
 const authentication = require('../routes/authentication');
 const article = require('../routes/article');
+const brandjob = require('../routes/brandjob');
 const rideRequests = require('../routes/riderequests');
 const stripe = require('../routes/stripe');
 const fs = require('firebase-admin');
@@ -44,6 +45,7 @@ module.exports = function(app){
     app.use('/api/driver', driver);
     app.use('/api/authentication', authentication);
     app.use('/api/article', article);
+    app.use('/api/brandjob', brandjob);
     app.use('/api/rideRequests', rideRequests);
     app.use('/api/stripe', stripe);
 }
