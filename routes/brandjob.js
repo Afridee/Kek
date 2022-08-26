@@ -47,5 +47,12 @@ router.get('/getSelfPromotions',async  (req, res) => {
       });
   })
 
+  router.get('/getPromotionCharge',async  (req, res) => {
+    const db = fs.firestore();
+    await db.collection("infos").doc("promotionCharge").get().then(info => {
+      res.status(200).send({"promotionCharge": (s*price).toFixed(2), "distanceIn" : "km"});
+    });
+  })  
+
 
 module.exports = router;
