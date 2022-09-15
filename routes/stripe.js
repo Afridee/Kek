@@ -8,7 +8,6 @@ const {validateSelfPromotion} = require('../validations/validateSelfPromotion');
 const {validatebusinessPromotion} = require('../validations/validatebusinessPromotion');
 const stripe = require('stripe')(process.env.stripe_sk);
 const {uploadImageToStorage} = require('../functions/uploadImageToStorage');
-
 const Multer = require('multer');
 const multer = Multer({
   storage: Multer.memoryStorage(),

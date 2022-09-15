@@ -5,6 +5,7 @@ const article = require('../routes/article');
 const brandjob = require('../routes/brandjob');
 const rideRequests = require('../routes/riderequests');
 const stripe = require('../routes/stripe');
+const services = require('../routes/services');
 const fs = require('firebase-admin');
 const {initializeApp} = require("firebase/app");
 
@@ -48,4 +49,5 @@ module.exports = function(app){
     app.use('/api/brandjob', brandjob);
     app.use('/api/rideRequests', rideRequests);
     app.use('/api/stripe', stripe);
+    app.use('/api/services', services);
 }
