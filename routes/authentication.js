@@ -80,7 +80,18 @@ router.post('/signIn',async  (req, res) => {
     });
 });
 
+router.get('/getProfileInfo/:uid',async  (req, res) => {
+  const db = fs.firestore();
+  
+  await db.collection("Users").doc(req.params.uid).get().then(user => {
+     if(user.exists){
+      res.status(200).send(user.data());
+     }else{
+      res.status(400).send({"error":"User not found"});
+     }
+  });
 
+});
 
 router.post('/verifyToken',async  (req, res) => {
   const { error } = validateAccessToken(req.body); 
