@@ -20,6 +20,7 @@ const firebaseConfig = {
   measurementId: process.env.firebasemeasurementId
 };
 
+
 const serviceAccount = {
     "type": "service_account",
     "project_id": "kekk-c40d0",
