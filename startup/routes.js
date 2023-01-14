@@ -2,6 +2,7 @@ const express = require('express');
 const driver = require('../routes/driver');
 const authentication = require('../routes/authentication');
 const article = require('../routes/article');
+const sidehustle = require('../routes/sidehustle');
 const brandjob = require('../routes/brandjob');
 const rideRequests = require('../routes/riderequests');
 const stripe = require('../routes/stripe');
@@ -51,4 +52,5 @@ module.exports = function(app){
     app.use('/api/rideRequests', rideRequests);
     app.use('/api/stripe', stripe);
     app.use('/api/services', services);
+    app.use('/api/sidehustle', sidehustle);
 }
